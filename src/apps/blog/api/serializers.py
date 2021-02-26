@@ -29,20 +29,23 @@ class CategorySerializer(serializers.ModelSerializer):
         return data | {'slug': slug}
 
 
-class PostImagesField(serializers.RelatedField):
-    def to_representation(self, instance):
-        url = instance.data.url
-        request = self.context.get('request', None)
-        if request is not None:
-            return request.build_absolute_uri(url)
-        return url
+class PostImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostImage
+        fields = ['post', 'data']
+    
+    def to_representation(self, value):
+        request = self.context.get('request')
+        return {
+            'small': request.build_absolute_uri(value.data.url)
+        }
 
 
 class PostSerializer(serializers.ModelSerializer):
 
     owner = UserSerializer(required=False)
     categories = CategorySerializer(many=True, read_only=True)
-    images = PostImagesField(many=True, read_only=True)
+    images = PostImageSerializer(many=True, required=False)
 
     class Meta:
         model = Post
@@ -50,15 +53,17 @@ class PostSerializer(serializers.ModelSerializer):
         extra_kwargs = {'slug': {'required': False}}
     
     def to_internal_value(self, data):
-        categories_pk = data.get('categories', [])
         internal_data = super().to_internal_value(data)
+        categories_pk = data.get('categories', [])
         try:
-            categories = [Category.objects.get(pk=pk) for pk in categories_pk]
+            internal_data['categories'] = [
+                Category.objects.get(pk=pk) for pk in categories_pk
+            ]
         except Category.DoesNotExist:
             raise serializers.ValidationError(
-                {'categories': ['Invalid classes primary key']},
+                {'categories': ['Invalid category\'s primary key']}
             )
-        return internal_data | {'categories': categories}
+        return internal_data
 
     def validate(self, data):
         slug = data.get('slug')
