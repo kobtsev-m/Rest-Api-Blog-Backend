@@ -1,0 +1,107 @@
+[
+{
+  "model": "blog.category",
+  "pk": 1,
+  "fields": {
+    "name": "Space",
+    "slug": "space"
+  }
+},
+{
+  "model": "blog.category",
+  "pk": 2,
+  "fields": {
+    "name": "Marketing",
+    "slug": "marketing"
+  }
+},
+{
+  "model": "blog.category",
+  "pk": 3,
+  "fields": {
+    "name": "Buisness",
+    "slug": "buisness"
+  }
+},
+{
+  "model": "blog.category",
+  "pk": 4,
+  "fields": {
+    "name": "Art",
+    "slug": "art"
+  }
+},
+{
+  "model": "blog.category",
+  "pk": 5,
+  "fields": {
+    "name": "Music",
+    "slug": "music"
+  }
+},
+{
+  "model": "blog.post",
+  "pk": 25,
+  "fields": {
+    "title": "Strange days...",
+    "slug": "strange-days",
+    "status": "P",
+    "content": "Just spring",
+    "updated": "2021-02-28T20:04:47.615Z",
+    "created": "2021-02-28T20:04:47.615Z",
+    "owner": 1,
+    "categories": [
+      1
+    ]
+  }
+},
+{
+  "model": "blog.post",
+  "pk": 26,
+  "fields": {
+    "title": "Art Progress",
+    "slug": "art-progress",
+    "status": "P",
+    "content": "Incredible",
+    "updated": "2021-03-01T20:29:28.936Z",
+    "created": "2021-03-01T20:29:28.936Z",
+    "owner": 1,
+    "categories": [
+      1,
+      4
+    ]
+  }
+},
+{
+  "model": "blog.postimage",
+  "pk": 25,
+  "fields": {
+    "post": 25,
+    "data": "user-relax/posts/strange-days/61fc4790.jpg"
+  }
+},
+{
+  "model": "blog.postimage",
+  "pk": 26,
+  "fields": {
+    "post": 25,
+    "data": "user-relax/posts/strange-days/2c7d06f7.jpg"
+  }
+},
+{
+  "model": "blog.postimage",
+  "pk": 27,
+  "fields": {
+    "post": 25,
+    "data": "user-relax/posts/strange-days/e9a2daa2.jpg"
+  }
+},
+{
+  "model": "blog.postimage",
+  "pk": 28,
+  "fields": {
+    "post": 26,
+    "data": "user-relax/posts/art-progress/641a5b7d.jpg"
+  }
+}
+]
