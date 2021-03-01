@@ -54,7 +54,7 @@ class PostSerializer(serializers.ModelSerializer):
     
     def to_internal_value(self, data):
         internal_data = super().to_internal_value(data)
-        categories_pk = data.get('categories', [])
+        categories_pk = data.getlist('categories')
         try:
             internal_data['categories'] = [
                 Category.objects.get(pk=pk) for pk in categories_pk
