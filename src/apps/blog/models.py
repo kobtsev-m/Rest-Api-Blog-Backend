@@ -89,7 +89,7 @@ class PostImage(models.Model):
 
     SM_PATH = UploadPostImagesPath('sm')
     LG_PATH = UploadPostImagesPath('lg')
-    SM_IMG_SIZE = (400, 400)
+    SM_IMG_SIZE = (512, 512)
 
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='images')
     small = models.ImageField(upload_to=SM_PATH, blank=True, null=True)
