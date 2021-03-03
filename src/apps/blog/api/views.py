@@ -16,7 +16,10 @@ class PostViewSet(ModelViewSet):
     def perform_create(self, serializer):
         post = serializer.save()
         for image_data in self.request.data.getlist('images'):
-            image = PostImageSerializer(data={'post': post.pk, 'data': image_data})
+            image = PostImageSerializer(data={
+                'post': post.pk,
+                'large': image_data
+            })
             image.is_valid(raise_exception=True)
             image.save()
 

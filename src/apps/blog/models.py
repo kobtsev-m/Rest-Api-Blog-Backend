@@ -1,9 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.deconstruct import deconstructible
 
 from django.utils.text import slugify
 from uuid import uuid4
 from os import path
+
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from PIL import Image, ImageFilter
+from io import BytesIO
+import sys
 
 
 class Category(models.Model):
@@ -66,17 +72,47 @@ class Post(models.Model):
         verbose_name_plural = 'Posts'
 
 
-def post_directory_path(instance, filename):
-    user = instance.post.owner
-    post = instance.post
-    file = str(uuid4())[:8] + path.splitext(filename)[1]
-    return f'user-{user.username}/posts/{post.slug}/{file}'
+@deconstructible
+class UploadPostImagesPath:
+
+    def __init__(self, postfix):
+        self.postfix = postfix
+
+    def __call__(self, instance, filename):
+        user = instance.post.owner
+        post = instance.post
+        file = f'{str(uuid4())[:8]}-{self.postfix}{path.splitext(filename)[1]}'
+        return f'user-{user.username}/posts/{post.slug}/{file}'
 
 
 class PostImage(models.Model):
 
+    SM_PATH = UploadPostImagesPath('sm')
+    LG_PATH = UploadPostImagesPath('lg')
+    SM_IMG_SIZE = (400, 400)
+
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='images')
-    data = models.ImageField(upload_to=post_directory_path)
+    small = models.ImageField(upload_to=SM_PATH, blank=True, null=True)
+    large = models.ImageField(upload_to=LG_PATH, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+
+        im = Image.open(self.large)
+        output = BytesIO()
+
+        im.thumbnail(self.SM_IMG_SIZE)
+        im.save(output, format='JPEG')
+        output.seek(0)
+
+        self.small = InMemoryUploadedFile(
+            output,
+            'ImageField',
+            'tmp.jpg',
+            'image/jpeg',
+            sys.getsizeof(output),
+            None
+        )
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'Post Image'

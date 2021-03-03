@@ -32,12 +32,13 @@ class CategorySerializer(serializers.ModelSerializer):
 class PostImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostImage
-        fields = ['post', 'data']
+        fields = ['post', 'large']
     
     def to_representation(self, value):
         request = self.context.get('request')
         return {
-            'small': request.build_absolute_uri(value.data.url)
+            'small': request.build_absolute_uri(value.small.url),
+            'large': request.build_absolute_uri(value.large.url)
         }
 
 
