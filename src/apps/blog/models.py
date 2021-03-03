@@ -39,7 +39,7 @@ class Post(models.Model):
 
     DEFAULT_USER_PK = 1
 
-    title = models.CharField(max_length=128)
+    title = models.CharField(max_length=255)
     slug = models.SlugField()
     status = models.CharField(max_length=16, choices=STATUS_CHOICES)
     content = models.TextField()
